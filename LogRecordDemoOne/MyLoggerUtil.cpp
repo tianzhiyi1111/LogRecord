@@ -63,11 +63,16 @@ namespace Logger
 		time(&timeStamp);
 		tm timeInfo;
 		localtime_s(&timeInfo, &timeStamp);
-		std::string strCurTime = std::to_string(timeInfo.tm_year + 1900) + "-" + std::to_string(timeInfo.tm_mon + 1) +
-			"-" + std::to_string(timeInfo.tm_mday) + " " + std::to_string(timeInfo.tm_hour) + ":" +
-			std::to_string(timeInfo.tm_min) + ":" + std::to_string(timeInfo.tm_sec);
+		std::string strCurTime = std::to_string(timeInfo.tm_year + 1900) + "_" + std::to_string(timeInfo.tm_mon + 1) +
+			"_" + std::to_string(timeInfo.tm_mday) +"_"+ std::to_string(timeInfo.tm_hour) + "_" +
+			std::to_string(timeInfo.tm_min) + "_" + std::to_string(timeInfo.tm_sec);
 
-		std::string fileName = m_logFilePath + strCurTime;
+		FileHelper::FileUtil fileHelper;
+		std::string path = fileHelper.GetFilePathFromPath(m_logFilePath);
+		std::string extendName = fileHelper.GetExtendNameFromPath(m_logFilePath);
+
+		std::string fileName = path + strCurTime + "." + extendName;
+		// fileName = "se111.log";
 		if (rename(m_logFilePath.c_str(), fileName.c_str()) != 0)
 		{
 			return;
@@ -132,4 +137,71 @@ namespace Logger
 		}
 	}
 }
+
+namespace FileHelper
+{
+	FileUtil::FileUtil()
+	{
+	
+	}
+
+	FileUtil::~FileUtil()
+	{
+	
+	}
+
+	// 从文件路径中获取文件名（不带后缀）
+	std::string FileUtil::GetFileNameFromPath(const std::string& strPath)
+	{
+		std::string strFileNameWithEx = GetFileNameWithExFromPath(strPath);
+		for (int i = strFileNameWithEx.size() - 1; i >= 0; --i)
+		{
+			if (strPath[i] == '.')
+			{
+				return strPath.substr(0, (size_t)i + 1);
+			}
+		}
+		return "";
+	}
+
+	// 从文件路径中获取文件名（带后缀）
+	std::string FileUtil::GetFileNameWithExFromPath(const std::string& strPath)
+	{
+		for (int i = strPath.size() - 1; i >= 0; --i)
+		{
+			if (strPath[i] == '\\' || strPath[i] == '/')
+			{
+				return strPath.substr((size_t)i + 1);
+			}
+		}
+		return "";
+	}
+
+	// 从文件路径中获取路径（不带文件名）
+	std::string FileUtil::GetFilePathFromPath(const std::string& strPath)
+	{
+		for (int i = strPath.size() - 1; i >= 0; --i)
+		{
+			if (strPath[i] == '\\' || strPath[i] == '/')
+			{
+				return strPath.substr(0, (size_t)i + 1);
+			}
+		}
+		return "";
+	}
+
+	// 从文件路径中获取文件拓展名
+	std::string FileUtil::GetExtendNameFromPath(const std::string& strPath)
+	{
+		for (int i = strPath.size() - 1; i >= 0; --i)
+		{
+			if (strPath[i] == '.')
+			{
+				return strPath.substr((size_t)i + 1);
+			}
+		}
+		return "";
+	}
+}
+
 

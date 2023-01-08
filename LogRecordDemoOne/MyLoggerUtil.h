@@ -3,6 +3,31 @@
 #include <string>
 #include <fstream>
 
+
+namespace FileHelper
+{
+	class FileUtil
+	{
+	public:
+		FileUtil();
+
+		virtual ~FileUtil();
+
+		// 从文件路径中获取文件名（不带后缀）
+		std::string GetFileNameFromPath(const std::string& strPath);
+
+		// 从文件路径中获取文件名（带后缀）
+		std::string GetFileNameWithExFromPath(const std::string& strPath);
+
+		// 从文件路径中获取路径（不带文件名）
+		std::string GetFilePathFromPath(const std::string& strPath);
+
+		// 从文件路径中获取文件拓展名
+		std::string GetExtendNameFromPath(const std::string& strPath);
+	};
+}
+
+
 namespace Logger
 {
 #define debug(format, ...) \
